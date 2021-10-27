@@ -1,0 +1,6 @@
+# Project exclude paths
+/ShareSteadLogic/target/
+/ShareSteadRepository/target/
+/ShareSteadTranslator/target/
+/ShareSteadWeb/target/
+/ShareSteadRepository/src/main/resources/application-db.properties
