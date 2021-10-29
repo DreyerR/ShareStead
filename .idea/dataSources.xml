@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
-    <data-source source="LOCAL" name="sharesteadDb@sharestead.cyadngvwhtcp.eu-west-3.rds.amazonaws.com" uuid="7ba5d633-6bbb-4e2c-b54c-faac1208ce06">
+    <data-source source="LOCAL" name="sharesteadDb@localhost" uuid="834e8e81-1676-4bda-b11e-1cb9c59ce0d1">
       <driver-ref>mysql.8</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>com.mysql.cj.jdbc.Driver</jdbc-driver>
-      <jdbc-url>jdbc:mysql://sharestead.cyadngvwhtcp.eu-west-3.rds.amazonaws.com:3306/sharesteadDb</jdbc-url>
+      <jdbc-url>jdbc:mysql://localhost:3306/sharesteadDb</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
   </component>
