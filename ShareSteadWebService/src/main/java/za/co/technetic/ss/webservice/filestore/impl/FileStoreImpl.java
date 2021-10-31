@@ -27,7 +27,6 @@ public class FileStoreImpl implements FileStore {
         ObjectMetadata metadata = new ObjectMetadata();
         optionalMetadata.ifPresent(map -> {
             if (!map.isEmpty()) {
-//                map.forEach(metadata::addUserMetadata);
                 metadata.setContentType(map.get("Content-Type").toString());
                 metadata.setContentLength((Long)map.get("Content-Length"));
             }

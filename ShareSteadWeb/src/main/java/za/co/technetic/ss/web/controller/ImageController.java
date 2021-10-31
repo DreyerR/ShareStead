@@ -9,7 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 import za.co.technetic.ss.domain.service.GeneralResponse;
 import za.co.technetic.ss.logic.flow.CreateMemberImageFlow;
 
-import java.util.List;
+import java.util.Arrays;
 
 @RestController
 @RequestMapping("image")
@@ -23,16 +23,18 @@ public class ImageController {
     }
 
     @PostMapping(
-            path = "/{memberId}/image/upload",
+            path = "/{memberId}/upload",
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     public ResponseEntity<GeneralResponse<String>> uploadImage(@PathVariable("memberId") Long memberId,
-                                                       @RequestParam("file") MultipartFile file) {
-        createMemberImageFlow.uploadImageToS3(memberId, file);
+                                                       @RequestParam("file") MultipartFile[] files) {
+        Arrays.stream(files).forEach(file -> {
+            createMemberImageFlow.uploadImageToS3(memberId, file);
+        });
 
-        GeneralResponse<String> generalResponse = new GeneralResponse<>(HttpStatus.OK.value(), "Image " +
-                "successfully uploaded", null);
+        String message = String.format("Successfully uploaded %d file(s)", files.length);
+        GeneralResponse<String> generalResponse = new GeneralResponse<>(HttpStatus.OK.value(), message, null);
 
         return new ResponseEntity<>(generalResponse, HttpStatus.OK);
     }

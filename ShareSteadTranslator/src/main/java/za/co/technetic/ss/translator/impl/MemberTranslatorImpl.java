@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import za.co.technetic.ss.domain.dto.MemberDto;
+import za.co.technetic.ss.domain.persistence.Member;
 import za.co.technetic.ss.repo.persistence.MemberRepository;
 import za.co.technetic.ss.translator.MemberTranslator;
 
@@ -28,5 +29,10 @@ public class MemberTranslatorImpl implements MemberTranslator {
             LOGGER.error("Unable to save member: {}", e.getMessage());
             throw new RuntimeException("Unable to register member");
         }
+    }
+
+    @Override
+    public Member fetchMemberById(Long id) {
+        return memberRepository.findById(id).orElse(null);
     }
 }

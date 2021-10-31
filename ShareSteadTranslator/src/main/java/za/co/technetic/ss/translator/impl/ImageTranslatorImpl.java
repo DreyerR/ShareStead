@@ -27,32 +27,10 @@ public class ImageTranslatorImpl implements ImageTranslator {
     }
 
     @Override
-    public void uploadImageToS3(Long memberId, MultipartFile file) {
-        if (file.isEmpty()) {
-            throw new IllegalStateException("ImageTranslatorImpl: Unable to upload file (no files to upload)");
-        }
-
-        Member member = memberRepository.findById(memberId).orElse(null);
-        if (null == member) {
-            throw new IllegalStateException(String.format("Unable to locate member with ID %d", memberId));
-        }
-
-//        for (MultipartFile file: files) {
-//            if (!Arrays.asList(ContentType.IMAGE_JPEG, ContentType.IMAGE_PNG, ContentType.IMAGE_TIFF)
-//                    .contains(file.getContentType())) {
-//                throw new IllegalStateException("File must be an image");
-//            }
-//        }
-
-        Map<String, Object> metadata = new HashMap<>();
-        metadata.put("Content-Type", file.getContentType());
-        metadata.put("Content-Length", file.getSize());
-
-        String path = String.format("%s/%s", BucketName.PROFILE_IMAGE.getBucketName(), member.getId());
-        String fileName = String.format("%s-%s.PNG", file.getName(), UUID.randomUUID());
-
+    public void uploadImageToS3(String path, String fileName, Optional<Map<String, Object>> metadata,
+                                MultipartFile file) {
         try {
-            fileStore.uploadImage(path, fileName, Optional.of(metadata), file.getInputStream());
+            fileStore.uploadImage(path, fileName, metadata, file.getInputStream());
         }
         catch (IOException e) {
             throw new IllegalStateException(e);

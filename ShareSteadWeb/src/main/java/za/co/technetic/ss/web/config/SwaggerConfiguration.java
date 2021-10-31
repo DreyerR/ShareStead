@@ -20,13 +20,13 @@ import java.util.Collections;
 @Import(springfox.bean.validators.configuration.BeanValidatorPluginsConfiguration.class)
 public class SwaggerConfiguration {
 
-    @Value("Version 1.0")
+    @Value("${spring.application.version}")
     private String applicationVersion;
 
-    @Value("ShareStead")
+    @Value("${spring.application.name}")
     private String applicationName;
 
-    @Value("Upload, share and manage photos online")
+    @Value("${spring.application.description}")
     private String applicationDescription;
 
     @Bean
