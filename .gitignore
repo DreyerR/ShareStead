@@ -4,3 +4,4 @@
 /ShareSteadTranslator/target/
 /ShareSteadWeb/target/
 /ShareSteadRepository/src/main/resources/application-db.properties
+/ShareSteadWebService/src/main/resources/aws-properties.properties
