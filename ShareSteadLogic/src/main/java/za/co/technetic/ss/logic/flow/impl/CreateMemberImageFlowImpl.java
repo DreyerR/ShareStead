@@ -45,7 +45,7 @@ public class CreateMemberImageFlowImpl implements CreateMemberImageFlow {
         String[] contentType = Objects.requireNonNull(file.getContentType()).split("/");
 
         if (!allowedContentTypes.contains(contentType[1])) {
-            throw new RuntimeException(String.format("Invalid file type %s", file.getContentType()));
+            throw new RuntimeException(String.format("Invalid file type: %s", file.getContentType()));
         }
         if (file.isEmpty()) {
             throw new IllegalStateException("ImageTranslatorImpl: Unable to upload file (no files to upload)");
@@ -56,7 +56,8 @@ public class CreateMemberImageFlowImpl implements CreateMemberImageFlow {
         metadata.put("Content-Length", file.getSize());
 
         String path = String.format("%s/%s", BucketName.PROFILE_IMAGE.getBucketName(), member.getId());
-        String fileName = String.format("%s-%s.%s", file.getName(), UUID.randomUUID(), contentType[1]);
+        String fileName = String.format("%s-%s.%s", Objects.requireNonNull(file.getOriginalFilename()).split("\\.")[0],
+                UUID.randomUUID(), contentType[1]);
 
         imageTranslator.uploadImageToS3(path, fileName, Optional.of(metadata), file);
         metadata.clear();

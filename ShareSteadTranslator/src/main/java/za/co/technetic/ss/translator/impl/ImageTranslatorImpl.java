@@ -11,6 +11,7 @@ import za.co.technetic.ss.repo.persistence.MemberRepository;
 import za.co.technetic.ss.translator.ImageTranslator;
 import za.co.technetic.ss.webservice.filestore.FileStore;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.*;
 
@@ -35,5 +36,10 @@ public class ImageTranslatorImpl implements ImageTranslator {
         catch (IOException e) {
             throw new IllegalStateException(e);
         }
+    }
+
+    @Override
+    public ByteArrayOutputStream downloadImage(Long memberId, String keyName) throws IOException {
+        return fileStore.downloadImage(memberId, keyName);
     }
 }
