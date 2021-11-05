@@ -15,6 +15,7 @@ import za.co.technetic.ss.logic.flow.FetchMemberImageFlow;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.Arrays;
 
 @RestController
@@ -22,6 +23,7 @@ import java.util.Arrays;
 public class ImageController {
 
     private final Logger LOGGER = LoggerFactory.getLogger(ImageController.class);
+
     private final CreateMemberImageFlow createMemberImageFlow;
     private final FetchMemberImageFlow fetchMemberImageFlow;
 
@@ -38,8 +40,13 @@ public class ImageController {
     )
     public ResponseEntity<GeneralResponse<String>> uploadImage(@PathVariable("memberId") Long memberId,
                                                        @RequestParam("file") MultipartFile[] files) {
+
         Arrays.stream(files).forEach(file -> {
-            createMemberImageFlow.uploadImageToS3(memberId, file);
+            try {
+                createMemberImageFlow.uploadImageToS3(memberId, file);
+            } catch (SQLException e) {
+                LOGGER.error("Unable to save photo in database: {}", e.getMessage());
+            }
         });
 
         String message = String.format("Successfully uploaded %d file(s)", files.length);

@@ -1,30 +1,28 @@
 package za.co.technetic.ss.translator.impl;
 
-import org.apache.http.entity.ContentType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
-import za.co.technetic.ss.domain.dto.BucketName;
-import za.co.technetic.ss.domain.persistence.Member;
-import za.co.technetic.ss.domain.persistence.MemberPhoto;
-import za.co.technetic.ss.repo.persistence.MemberRepository;
+import za.co.technetic.ss.domain.persistence.Photo;
+import za.co.technetic.ss.repo.persistence.PhotoRepository;
 import za.co.technetic.ss.translator.ImageTranslator;
 import za.co.technetic.ss.webservice.filestore.FileStore;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.*;
+import java.util.Map;
+import java.util.Optional;
 
 @Component
 public class ImageTranslatorImpl implements ImageTranslator {
 
     private final FileStore fileStore;
-    private final MemberRepository memberRepository;
+    private final PhotoRepository photoRepository;
 
     @Autowired
-    public ImageTranslatorImpl(FileStore fileStore, MemberRepository memberRepository) {
+    public ImageTranslatorImpl(FileStore fileStore, PhotoRepository photoRepository) {
         this.fileStore = fileStore;
-        this.memberRepository = memberRepository;
+        this.photoRepository = photoRepository;
     }
 
     @Override
@@ -41,5 +39,10 @@ public class ImageTranslatorImpl implements ImageTranslator {
     @Override
     public ByteArrayOutputStream downloadImage(Long memberId, String keyName) throws IOException {
         return fileStore.downloadImage(memberId, keyName);
+    }
+
+    @Override
+    public Photo savePhoto(Photo photo) {
+        return photoRepository.save(photo);
     }
 }

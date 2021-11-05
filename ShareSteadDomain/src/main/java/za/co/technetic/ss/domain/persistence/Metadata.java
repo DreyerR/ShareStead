@@ -10,17 +10,28 @@ import java.util.Objects;
 public class Metadata implements Serializable {
 
     private Long id;
-    private String owner;
+    private String originalFileName;
     private LocalDate dateCreated;
     private double imgSize;
+    private String contentType;
     private Photo photo;
 
-    public Metadata(Long id, String owner, LocalDate dateCreated, double imgSize, Photo photo) {
+    public Metadata(Long id, String originalFileName, LocalDate dateCreated, double imgSize, String contentType,
+                    Photo photo) {
         this.id = id;
-        this.owner = owner;
+        this.originalFileName = originalFileName;
         this.dateCreated = dateCreated;
         this.imgSize = imgSize;
+        this.contentType = contentType;
         this.photo = photo;
+    }
+
+    public Metadata(Long id, String originalFileName, LocalDate dateCreated, double imgSize, String contentType) {
+        this.id = id;
+        this.originalFileName = originalFileName;
+        this.dateCreated = dateCreated;
+        this.imgSize = imgSize;
+        this.contentType = contentType;
     }
 
     public Metadata() {
@@ -38,13 +49,13 @@ public class Metadata implements Serializable {
         this.id = id;
     }
 
-    @Column(name = "meta_owner")
-    public String getOwner() {
-        return owner;
+    @Column(name = "meta_original_file_name")
+    public String getOriginalFileName() {
+        return originalFileName;
     }
 
-    public void setOwner(String owner) {
-        this.owner = owner;
+    public void setOriginalFileName(String originalFileName) {
+        this.originalFileName = originalFileName;
     }
 
     @Column(name = "meta_date_created")
@@ -65,7 +76,17 @@ public class Metadata implements Serializable {
         this.imgSize = imgSize;
     }
 
-    @OneToOne(targetEntity = Photo.class, mappedBy = "metadata", fetch = FetchType.LAZY)
+    @Column(name = "meta_content_type")
+    public String getContentType() {
+        return contentType;
+    }
+
+    public void setContentType(String contentType) {
+        this.contentType = contentType;
+    }
+
+    @OneToOne(targetEntity = Photo.class, mappedBy = "metadata", fetch = FetchType.LAZY, orphanRemoval = true,
+            cascade = CascadeType.ALL)
     public Photo getPhoto() {
         return photo;
     }
@@ -80,12 +101,12 @@ public class Metadata implements Serializable {
         if (o == null || getClass() != o.getClass()) return false;
         Metadata metadata = (Metadata) o;
         return Double.compare(metadata.imgSize, imgSize) == 0 && id.equals(metadata.id) &&
-                Objects.equals(owner, metadata.owner) && Objects.equals(dateCreated, metadata.dateCreated) &&
-                photo.equals(metadata.photo);
+                originalFileName.equals(metadata.originalFileName) && dateCreated.equals(metadata.dateCreated) &&
+                contentType.equals(metadata.contentType) && Objects.equals(photo, metadata.photo);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, owner, dateCreated, imgSize, photo);
+        return Objects.hash(id, originalFileName, dateCreated, imgSize, contentType, photo);
     }
 }

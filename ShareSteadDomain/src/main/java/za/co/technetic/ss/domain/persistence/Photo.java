@@ -20,6 +20,12 @@ public class Photo {
         this.members = members;
     }
 
+    public Photo(Long id, String url, Metadata metadata) {
+        this.id = id;
+        this.url = url;
+        this.metadata = metadata;
+    }
+
     public Photo() {
     }
 
@@ -43,7 +49,7 @@ public class Photo {
         this.url = url;
     }
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "meta_id")
     public Metadata getMetadata() {
         return metadata;
