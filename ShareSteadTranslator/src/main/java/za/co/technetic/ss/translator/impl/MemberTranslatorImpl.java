@@ -13,7 +13,7 @@ import za.co.technetic.ss.translator.MemberTranslator;
 public class MemberTranslatorImpl implements MemberTranslator {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MemberTranslatorImpl.class);
-    private MemberRepository memberRepository;
+    private final MemberRepository memberRepository;
 
     @Autowired
     public MemberTranslatorImpl(MemberRepository memberRepository) {
@@ -34,5 +34,10 @@ public class MemberTranslatorImpl implements MemberTranslator {
     @Override
     public Member fetchMemberById(Long id) {
         return memberRepository.findById(id).orElse(null);
+    }
+
+    @Override
+    public Member findMemberByEmail(String email) {
+        return memberRepository.findByEmail(email);
     }
 }

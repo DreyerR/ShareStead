@@ -8,6 +8,8 @@ import java.util.Objects;
 @Embeddable
 public class MemberPhotoKey implements Serializable {
 
+    private static final long serialVersionUID = -6631382828709983029L;
+
     private Long memberId;
     private Long photoId;
 

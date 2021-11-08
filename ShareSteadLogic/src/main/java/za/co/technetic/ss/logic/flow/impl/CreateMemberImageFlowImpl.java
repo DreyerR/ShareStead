@@ -10,6 +10,7 @@ import za.co.technetic.ss.logic.flow.CreateMemberImageFlow;
 import za.co.technetic.ss.translator.ImageTranslator;
 import za.co.technetic.ss.translator.MemberPhotoTranslator;
 import za.co.technetic.ss.translator.MemberTranslator;
+import za.co.technetic.ss.translator.MetadataTranslator;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
@@ -22,13 +23,15 @@ public class CreateMemberImageFlowImpl implements CreateMemberImageFlow {
     private final ImageTranslator imageTranslator;
     private final MemberTranslator memberTranslator;
     private final MemberPhotoTranslator memberPhotoTranslator;
+    private final MetadataTranslator metadataTranslator;
 
     @Autowired
     public CreateMemberImageFlowImpl(ImageTranslator imageTranslator, MemberTranslator memberTranslator,
-                                     MemberPhotoTranslator memberPhotoTranslator) {
+                                     MemberPhotoTranslator memberPhotoTranslator, MetadataTranslator metadataTranslator) {
         this.imageTranslator = imageTranslator;
         this.memberTranslator = memberTranslator;
         this.memberPhotoTranslator = memberPhotoTranslator;
+        this.metadataTranslator = metadataTranslator;
     }
 
     @Transactional(rollbackFor = SQLException.class)
@@ -71,23 +74,28 @@ public class CreateMemberImageFlowImpl implements CreateMemberImageFlow {
         imageTranslator.uploadImageToS3(path, fileName, Optional.of(metadata), file);
 
         // Saving photo reference and metadata in database
-        Photo photo = new Photo(
-                null,
-                fileName,
-                new Metadata(
-                        null,
-                        file.getOriginalFilename(),
-                        LocalDate.now(),
-                        (double)file.getSize(),
-                        file.getContentType()
-                ));
+        Photo photo = new Photo(null, fileName);
         if (null == savePhoto(photo)) {
             throw new SQLException("Unable to save image in database");
         }
 
+        // Saving photo metadata
+        Metadata photoMetadata = new Metadata(
+            null,
+            file.getOriginalFilename(),
+            LocalDate.now(),
+            (double)file.getSize(),
+            file.getContentType(),
+            photo
+        );
+
+        if (null == saveMetadata(photoMetadata)) {
+            throw new SQLException("Unable to save metadata");
+        }
+
         // Saving a photo reference in the composite entity
         MemberPhoto memberPhoto = new MemberPhoto(
-                new MemberPhotoKey(member.getId(), photo.getId()),
+                null,
                 member,
                 photo,
                 member.getId(),
@@ -107,5 +115,10 @@ public class CreateMemberImageFlowImpl implements CreateMemberImageFlow {
     @Override
     public MemberPhoto saveMemberPhoto(MemberPhoto memberPhoto) {
         return memberPhotoTranslator.saveMemberPhoto(memberPhoto);
+    }
+
+    @Override
+    public Metadata saveMetadata(Metadata metadata) {
+        return metadataTranslator.saveMetadata(metadata);
     }
 }

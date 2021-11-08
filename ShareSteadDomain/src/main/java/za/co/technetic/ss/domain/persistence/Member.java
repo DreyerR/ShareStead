@@ -2,6 +2,7 @@ package za.co.technetic.ss.domain.persistence;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -81,5 +82,20 @@ public class Member implements Serializable {
 
     public void setPhotos(Set<MemberPhoto> photos) {
         this.photos = photos;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Member member = (Member) o;
+        return id.equals(member.id) && firstName.equals(member.firstName) &&
+                lastName.equals(member.lastName) && email.equals(member.email) &&
+                password.equals(member.password) && Objects.equals(photos, member.photos);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, firstName, lastName, email, password, photos);
     }
 }

@@ -1,5 +1,6 @@
 package za.co.technetic.ss.web.controller;
 
+import com.amazonaws.services.xray.model.Http;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,14 +10,17 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import za.co.technetic.ss.domain.dto.PhotoDto;
 import za.co.technetic.ss.domain.service.GeneralResponse;
 import za.co.technetic.ss.logic.flow.CreateMemberImageFlow;
 import za.co.technetic.ss.logic.flow.FetchMemberImageFlow;
+import za.co.technetic.ss.logic.flow.ModifyMemberImageFlow;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Arrays;
+import java.util.List;
 
 @RestController
 @RequestMapping("image")
@@ -26,11 +30,14 @@ public class ImageController {
 
     private final CreateMemberImageFlow createMemberImageFlow;
     private final FetchMemberImageFlow fetchMemberImageFlow;
+    private final ModifyMemberImageFlow modifyMemberImageFlow;
 
     @Autowired
-    public ImageController(CreateMemberImageFlow createMemberImageFlow, FetchMemberImageFlow fetchMemberImageFlow) {
+    public ImageController(CreateMemberImageFlow createMemberImageFlow, FetchMemberImageFlow fetchMemberImageFlow,
+                           ModifyMemberImageFlow modifyMemberImageFlow) {
         this.createMemberImageFlow = createMemberImageFlow;
         this.fetchMemberImageFlow = fetchMemberImageFlow;
+        this.modifyMemberImageFlow = modifyMemberImageFlow;
     }
 
     @PostMapping(
@@ -62,6 +69,40 @@ public class ImageController {
                 .contentType(contentType(fileName))
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\"")
                 .body(downloadInputStream.toByteArray());
+    }
+
+    @GetMapping("/{memberId}/display/{fileName}")
+    public ResponseEntity<byte[]> displayImage(@PathVariable Long memberId, @PathVariable String fileName) throws IOException {
+        ByteArrayOutputStream downloadInputStream = fetchMemberImageFlow.downloadImage(memberId, fileName);
+        return ResponseEntity.ok()
+                .contentType(contentType(fileName))
+                .body(downloadInputStream.toByteArray());
+    }
+
+    @GetMapping("/fetch/{email}")
+    public ResponseEntity<GeneralResponse<List<PhotoDto>>> fetchMemberPhotos(@PathVariable String email) {
+        HttpStatus httpStatus = HttpStatus.OK;
+
+        GeneralResponse<List<PhotoDto>> generalResponse = fetchMemberImageFlow.fetchMemberPhotos(email);
+
+        if (generalResponse.getCode() == 404)
+            httpStatus = HttpStatus.NOT_FOUND;
+
+        return new ResponseEntity<>(generalResponse, httpStatus);
+    }
+
+    @DeleteMapping("/delete/{email}/{fileName}")
+    public ResponseEntity<GeneralResponse<String>> deleteMemberPhoto(
+            @PathVariable String email,
+            @PathVariable String fileName
+    ) {
+        HttpStatus httpStatus = HttpStatus.OK;
+        GeneralResponse<String> generalResponse = modifyMemberImageFlow.deletePhoto(email, fileName);
+
+        if (generalResponse.getCode() == 404)
+            httpStatus = HttpStatus.NOT_FOUND;
+
+        return new ResponseEntity<>(generalResponse, httpStatus);
     }
 
     private MediaType contentType(String fileName) {

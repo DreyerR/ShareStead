@@ -1,12 +1,13 @@
 package za.co.technetic.ss.domain.persistence;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Objects;
 import java.util.Set;
 
 @Entity
 @Table(name = "photo")
-public class Photo {
+public class Photo implements Serializable {
 
     private Long id;
     private String url;
@@ -24,6 +25,11 @@ public class Photo {
         this.id = id;
         this.url = url;
         this.metadata = metadata;
+    }
+
+    public Photo(Long id, String url) {
+        this.id = id;
+        this.url = url;
     }
 
     public Photo() {
@@ -49,8 +55,8 @@ public class Photo {
         this.url = url;
     }
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "meta_id")
+    @OneToOne(targetEntity = Metadata.class, mappedBy = "photo", fetch = FetchType.LAZY, orphanRemoval = true,
+    cascade = CascadeType.ALL)
     public Metadata getMetadata() {
         return metadata;
     }
@@ -73,8 +79,8 @@ public class Photo {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Photo photo = (Photo) o;
-        return id.equals(photo.id) && url.equals(photo.url) && metadata.equals(photo.metadata) &&
-                members.equals(photo.members);
+        return id.equals(photo.id) && url.equals(photo.url) && Objects.equals(metadata, photo.metadata) &&
+                Objects.equals(members, photo.members);
     }
 
     @Override

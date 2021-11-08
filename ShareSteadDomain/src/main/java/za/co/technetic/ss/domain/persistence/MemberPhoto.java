@@ -1,20 +1,24 @@
 package za.co.technetic.ss.domain.persistence;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Objects;
 
 @Entity
 @Table(name = "member_photo")
-public class MemberPhoto {
+public class MemberPhoto implements Serializable {
 
-    private MemberPhotoKey id;
+//    private MemberPhotoKey id;
+    private Long id;
+//    private Long memberId;
+//    private Long photoId;
     private Member member;
     private Photo photo;
 
     private Long ownerId;
     private boolean isModifiable;
 
-    public MemberPhoto(MemberPhotoKey id, Member member, Photo photo, Long ownerId, boolean isModifiable) {
+    public MemberPhoto(Long id, Member member, Photo photo, Long ownerId, boolean isModifiable) {
         this.id = id;
         this.member = member;
         this.photo = photo;
@@ -25,17 +29,46 @@ public class MemberPhoto {
     public MemberPhoto() {
     }
 
-    @EmbeddedId
-    public MemberPhotoKey getId() {
+//    @EmbeddedId
+//    public MemberPhotoKey getId() {
+//        return id;
+//    }
+
+//    public void setId(MemberPhotoKey id) {
+//        this.id = id;
+//    }
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "member_photo_id")
+    public Long getId() {
         return id;
     }
 
-    public void setId(MemberPhotoKey id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    @ManyToOne
-    @MapsId("memberId")
+//    @Column(name = "member_id")
+//    public Long getMemberId() {
+//        return memberId;
+//    }
+//
+//    public void setMemberId(Long memberId) {
+//        this.memberId = memberId;
+//    }
+//
+//    @Column(name = "photo_id")
+//    public Long getPhotoId() {
+//        return photoId;
+//    }
+//
+//    public void setPhotoId(Long photoId) {
+//        this.photoId = photoId;
+//    }
+
+    @ManyToOne(targetEntity = Member.class)
+//    @MapsId("memberId")
     @JoinColumn(name = "member_id")
     public Member getMember() {
         return member;
@@ -45,8 +78,8 @@ public class MemberPhoto {
         this.member = member;
     }
 
-    @ManyToOne
-    @MapsId("photoId")
+    @ManyToOne(targetEntity = Photo.class)
+//    @MapsId("photoId")
     @JoinColumn(name = "photo_id")
     public Photo getPhoto() {
         return photo;

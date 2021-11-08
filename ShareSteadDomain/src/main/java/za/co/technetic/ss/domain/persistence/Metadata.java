@@ -9,6 +9,8 @@ import java.util.Objects;
 @Table(name = "metadata")
 public class Metadata implements Serializable {
 
+    private static final long serialVersionUID = -5314570958611142942L;
+
     private Long id;
     private String originalFileName;
     private LocalDate dateCreated;
@@ -85,8 +87,8 @@ public class Metadata implements Serializable {
         this.contentType = contentType;
     }
 
-    @OneToOne(targetEntity = Photo.class, mappedBy = "metadata", fetch = FetchType.LAZY, orphanRemoval = true,
-            cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "photo_id")
     public Photo getPhoto() {
         return photo;
     }
@@ -101,8 +103,9 @@ public class Metadata implements Serializable {
         if (o == null || getClass() != o.getClass()) return false;
         Metadata metadata = (Metadata) o;
         return Double.compare(metadata.imgSize, imgSize) == 0 && id.equals(metadata.id) &&
-                originalFileName.equals(metadata.originalFileName) && dateCreated.equals(metadata.dateCreated) &&
-                contentType.equals(metadata.contentType) && Objects.equals(photo, metadata.photo);
+                originalFileName.equals(metadata.originalFileName) &&
+                dateCreated.equals(metadata.dateCreated) && contentType.equals(metadata.contentType) &&
+                Objects.equals(photo, metadata.photo);
     }
 
     @Override

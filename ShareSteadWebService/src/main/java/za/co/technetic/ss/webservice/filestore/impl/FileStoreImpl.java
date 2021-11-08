@@ -1,11 +1,11 @@
 package za.co.technetic.ss.webservice.filestore.impl;
 
 import com.amazonaws.AmazonServiceException;
+import com.amazonaws.SdkClientException;
 import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.model.AmazonS3Exception;
-import com.amazonaws.services.s3.model.GetObjectRequest;
-import com.amazonaws.services.s3.model.ObjectMetadata;
-import com.amazonaws.services.s3.model.S3Object;
+import com.amazonaws.services.s3.model.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import za.co.technetic.ss.domain.dto.BucketName;
@@ -20,6 +20,7 @@ import java.util.Optional;
 @Component
 public class FileStoreImpl implements FileStore {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(FileStoreImpl.class);
     private final AmazonS3 s3;
 
     @Autowired
@@ -48,7 +49,7 @@ public class FileStoreImpl implements FileStore {
 
     @Override
     public ByteArrayOutputStream downloadImage(Long memberId, String keyName) {
-        String path = String.format("%s/%s", BucketName.PROFILE_IMAGE.getBucketName(), memberId.toString());
+        String path = getPathName(memberId);
         try {
             S3Object s3Object = s3.getObject(new GetObjectRequest(path, keyName));
             InputStream is = s3Object.getObjectContent();
@@ -67,6 +68,23 @@ public class FileStoreImpl implements FileStore {
         catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public boolean deletePhoto(Long memberId, String keyName) {
+        String path = getPathName(memberId);
+        try {
+            s3.deleteObject(new DeleteObjectRequest(path, keyName));
+            return true;
+        }
+        catch (AmazonServiceException e) {
+            LOGGER.error(e.getMessage());
+        }
+        return false;
+    }
+
+    private String getPathName(Long memberId) {
+        return String.format("%s/%s", BucketName.PROFILE_IMAGE.getBucketName(), memberId.toString());
     }
 
 }
