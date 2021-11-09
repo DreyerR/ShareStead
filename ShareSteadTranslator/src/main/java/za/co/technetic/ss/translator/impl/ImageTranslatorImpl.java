@@ -95,4 +95,29 @@ public class ImageTranslatorImpl implements ImageTranslator {
 
         return fileStore.deletePhoto(memberId, keyName);
     }
+
+    @Override
+    public boolean shareImage(Long ownerId, Member sharedWith, Photo photo, boolean isModifiable) {
+        try {
+            MemberPhoto memberPhoto = new MemberPhoto(
+                    null,
+                    sharedWith,
+                    photo,
+                    ownerId,
+                    isModifiable
+            );
+
+            memberPhotoRepository.save(memberPhoto);
+            return true;
+        }
+        catch (Exception e) {
+            LOGGER.error(e.getMessage());
+            return false;
+        }
+    }
+
+    @Override
+    public Photo findPhotoByUrl(String fileName) {
+        return photoRepository.findPhotoByUrl(fileName);
+    }
 }

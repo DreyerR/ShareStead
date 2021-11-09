@@ -7,5 +7,6 @@ import za.co.technetic.ss.domain.persistence.Photo;
 @Repository
 public interface PhotoRepository extends JpaRepository<Photo, Long> {
     boolean existsPhotoByUrl(String url);
+    Photo findPhotoByUrl(String url);
     void deleteByUrl(String url);
 }

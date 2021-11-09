@@ -63,9 +63,11 @@ public class FileStoreImpl implements FileStore {
             return outputStream;
         }
         catch (AmazonS3Exception e) {
+            LOGGER.error(e.getMessage());
             throw new AmazonS3Exception("The image could not be found");
         }
         catch (IOException e) {
+            LOGGER.error(e.getMessage());
             throw new RuntimeException(e);
         }
     }

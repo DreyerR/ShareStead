@@ -1,6 +1,5 @@
 package za.co.technetic.ss.web.controller;
 
-import com.amazonaws.services.xray.model.Http;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 import za.co.technetic.ss.domain.dto.PhotoDto;
 import za.co.technetic.ss.domain.service.GeneralResponse;
 import za.co.technetic.ss.logic.flow.CreateMemberImageFlow;
+import za.co.technetic.ss.logic.flow.CreateMemberPhotoFlow;
 import za.co.technetic.ss.logic.flow.FetchMemberImageFlow;
 import za.co.technetic.ss.logic.flow.ModifyMemberImageFlow;
 
@@ -31,13 +31,15 @@ public class ImageController {
     private final CreateMemberImageFlow createMemberImageFlow;
     private final FetchMemberImageFlow fetchMemberImageFlow;
     private final ModifyMemberImageFlow modifyMemberImageFlow;
+    private final CreateMemberPhotoFlow createMemberPhotoFlow;
 
     @Autowired
     public ImageController(CreateMemberImageFlow createMemberImageFlow, FetchMemberImageFlow fetchMemberImageFlow,
-                           ModifyMemberImageFlow modifyMemberImageFlow) {
+                           ModifyMemberImageFlow modifyMemberImageFlow, CreateMemberPhotoFlow createMemberPhotoFlow) {
         this.createMemberImageFlow = createMemberImageFlow;
         this.fetchMemberImageFlow = fetchMemberImageFlow;
         this.modifyMemberImageFlow = modifyMemberImageFlow;
+        this.createMemberPhotoFlow = createMemberPhotoFlow;
     }
 
     @PostMapping(
@@ -101,6 +103,29 @@ public class ImageController {
 
         if (generalResponse.getCode() == 404)
             httpStatus = HttpStatus.NOT_FOUND;
+
+        return new ResponseEntity<>(generalResponse, httpStatus);
+    }
+
+    @PostMapping("/share/{sharedBy}/{sharedWith}/{fileName}")
+    public ResponseEntity<GeneralResponse<String>> sharePhoto(
+        @PathVariable String sharedBy,
+        @PathVariable String sharedWith,
+        @PathVariable String fileName,
+        @RequestParam(value = "isModifiable", required = false) boolean isModifiable
+    ) {
+        GeneralResponse<String> generalResponse = createMemberPhotoFlow.sharePhoto(
+                sharedBy,
+                sharedWith,
+                fileName,
+                isModifiable
+        );
+
+        HttpStatus httpStatus = HttpStatus.OK;
+        if (generalResponse.getCode() == 404)
+            httpStatus = HttpStatus.NOT_FOUND;
+        else if (generalResponse.getCode() == 500)
+            httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
 
         return new ResponseEntity<>(generalResponse, httpStatus);
     }

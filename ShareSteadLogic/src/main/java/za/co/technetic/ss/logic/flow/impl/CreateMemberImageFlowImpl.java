@@ -73,7 +73,7 @@ public class CreateMemberImageFlowImpl implements CreateMemberImageFlow {
 
         imageTranslator.uploadImageToS3(path, fileName, Optional.of(metadata), file);
 
-        // Saving photo reference and metadata in database
+        // Saving photo reference in database
         Photo photo = new Photo(null, fileName);
         if (null == savePhoto(photo)) {
             throw new SQLException("Unable to save image in database");
