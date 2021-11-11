@@ -8,7 +8,8 @@ import za.co.technetic.ss.translator.config.TranslatorConfig;
 @Import({TranslatorConfig.class})
 @Configuration
 @ComponentScan(basePackages = {
-        "za.co.technetic.ss.logic.flow"
+        "za.co.technetic.ss.logic.flow",
+        "za.co.technetic.ss.logic.service"
 })
 public class LogicConfig {
 }

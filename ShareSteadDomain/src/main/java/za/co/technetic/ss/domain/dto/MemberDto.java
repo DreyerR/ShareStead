@@ -1,42 +1,40 @@
 package za.co.technetic.ss.domain.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import za.co.technetic.ss.domain.persistence.Member;
 
-import java.io.Serializable;
+public class MemberDto {
 
-public class MemberDto implements Serializable {
-
-    private Long id;
     private String firstName;
     private String lastName;
     private String email;
+    private String password;
 
-    public MemberDto(Long id, String firstName, String lastName, String email) {
-        this.id = id;
+    public MemberDto(String firstName, String lastName, String email, String password) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
-    }
-
-    public MemberDto(String firstName, String lastName, String email) {
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.email = email;
+        this.password = password;
     }
 
     public MemberDto(Member member) {
-        this.id = member.getId();
         this.firstName = member.getFirstName();
         this.lastName = member.getLastName();
         this.email = member.getEmail();
+        this.password = member.getPassword();
     }
 
-    public Long getId() {
-        return id;
+    @JsonIgnore
+    public Member getMember() {
+        return new Member(
+                this.firstName,
+                this.lastName,
+                this.email,
+                this.password
+        );
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public MemberDto() {
     }
 
     public String getFirstName() {
@@ -61,5 +59,13 @@ public class MemberDto implements Serializable {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }

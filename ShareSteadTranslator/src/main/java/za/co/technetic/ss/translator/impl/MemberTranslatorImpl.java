@@ -21,9 +21,9 @@ public class MemberTranslatorImpl implements MemberTranslator {
     }
 
     @Override
-    public MemberDto saveMember(MemberDto memberDto) {
+    public Member saveMember(MemberDto memberDto) {
         try {
-            return null;
+            return memberRepository.save(memberDto.getMember());
         }
         catch (Exception e) {
             LOGGER.error("Unable to save member: {}", e.getMessage());

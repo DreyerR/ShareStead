@@ -9,7 +9,8 @@ import za.co.technetic.ss.logic.config.LogicConfig;
 @Import({LogicConfig.class})
 @Configuration
 @ComponentScan(basePackages = {
-        "za.co.technetic.ss.web.controller"
+        "za.co.technetic.ss.web.controller",
+        "za.co.technetic.ss.web.service"
 })
 @PropertySource(value = "classpath:application.properties")
 public class WebConfig {
