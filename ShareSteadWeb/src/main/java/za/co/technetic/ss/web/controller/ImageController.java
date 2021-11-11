@@ -124,6 +124,8 @@ public class ImageController {
         HttpStatus httpStatus = HttpStatus.OK;
         if (generalResponse.getCode() == 404)
             httpStatus = HttpStatus.NOT_FOUND;
+        else if (generalResponse.getCode() == 405)
+            httpStatus = HttpStatus.METHOD_NOT_ALLOWED;
         else if (generalResponse.getCode() == 500)
             httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
 

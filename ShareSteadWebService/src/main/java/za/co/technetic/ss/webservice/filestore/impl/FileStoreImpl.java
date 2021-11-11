@@ -85,6 +85,27 @@ public class FileStoreImpl implements FileStore {
         return false;
     }
 
+    @Override
+    public boolean copyPhoto(Long sharedById, Long sharedWithId, String fileName) {
+        String sharedByPath = getPathName(sharedById);
+        String sharedWithPath = getPathName(sharedWithId);
+        try {
+            CopyObjectRequest copyObjectRequest = new CopyObjectRequest(
+                    sharedByPath,
+                    fileName,
+                    sharedWithPath,
+                    fileName
+            );
+
+            s3.copyObject(copyObjectRequest);
+            return true;
+        }
+        catch (AmazonServiceException e) {
+            LOGGER.error(e.getMessage());
+            return false;
+        }
+    }
+
     private String getPathName(Long memberId) {
         return String.format("%s/%s", BucketName.PROFILE_IMAGE.getBucketName(), memberId.toString());
     }

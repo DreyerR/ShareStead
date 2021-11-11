@@ -11,6 +11,7 @@ import za.co.technetic.ss.domain.persistence.Photo;
 import za.co.technetic.ss.domain.service.GeneralResponse;
 import za.co.technetic.ss.logic.flow.CreateMemberPhotoFlow;
 import za.co.technetic.ss.translator.ImageTranslator;
+import za.co.technetic.ss.translator.MemberPhotoTranslator;
 import za.co.technetic.ss.translator.MemberTranslator;
 
 @Transactional
@@ -21,11 +22,14 @@ public class CreateMemberPhotoFlowImpl implements CreateMemberPhotoFlow {
 
     private final ImageTranslator imageTranslator;
     private final MemberTranslator memberTranslator;
+    private final MemberPhotoTranslator memberPhotoTranslator;
 
     @Autowired
-    public CreateMemberPhotoFlowImpl(ImageTranslator imageTranslator, MemberTranslator memberTranslator) {
+    public CreateMemberPhotoFlowImpl(ImageTranslator imageTranslator, MemberTranslator memberTranslator,
+                                     MemberPhotoTranslator memberPhotoTranslator) {
         this.imageTranslator = imageTranslator;
         this.memberTranslator = memberTranslator;
+        this.memberPhotoTranslator = memberPhotoTranslator;
     }
 
     @Override
@@ -36,15 +40,27 @@ public class CreateMemberPhotoFlowImpl implements CreateMemberPhotoFlow {
         Member sharedBy = memberTranslator.findMemberByEmail(sharedByEmail);
         Member sharedWith = memberTranslator.findMemberByEmail(sharedWithEmail);
 
+        // Check if both members exist
         if (null != sharedBy && null != sharedWith) {
             Photo photo = imageTranslator.findPhotoByUrl(fileName);
 
+            // Check if the photo exists
             if (null != photo) {
-                if (!imageTranslator.shareImage(sharedBy.getId(), sharedWith, photo, isModifiable)) {
-                    LOGGER.error("Unable to share image. Translator returned false");
 
-                    httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
-                    message = "Error: Image could not be shared";
+                // Check if photo is already shared or not
+                if (!memberPhotoTranslator.existsByMemberIdAndPhotoId(sharedWith.getId(), photo.getId())) {
+
+                    // Check if image was shared successfully or not
+                    if (!imageTranslator.shareImage(sharedBy.getId(), sharedWith, photo, isModifiable)) {
+                        LOGGER.error("Unable to share image. Translator returned false");
+
+                        httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+                        message = "Error: Image could not be shared";
+                    }
+                }
+                else {
+                    httpStatus = HttpStatus.METHOD_NOT_ALLOWED;
+                    message = "Image is already shared with that member";
                 }
             }
             else {

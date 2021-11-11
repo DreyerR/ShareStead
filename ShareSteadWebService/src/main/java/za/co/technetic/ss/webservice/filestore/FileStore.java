@@ -13,4 +13,5 @@ public interface FileStore {
 
     ByteArrayOutputStream downloadImage(Long memberId, String keyName) throws IOException;
     boolean deletePhoto(Long memberId, String keyName);
+    boolean copyPhoto(Long sharedBy, Long sharedWithId, String fileName);
 }

@@ -108,7 +108,8 @@ public class ImageTranslatorImpl implements ImageTranslator {
             );
 
             memberPhotoRepository.save(memberPhoto);
-            return true;
+
+            return fileStore.copyPhoto(ownerId, sharedWith.getId(), photo.getUrl());
         }
         catch (Exception e) {
             LOGGER.error(e.getMessage());

@@ -9,4 +9,5 @@ import java.util.List;
 @Repository
 public interface MemberPhotoRepository extends JpaRepository<MemberPhoto, Long> {
     List<MemberPhoto> findAllByMember_Id(Long memberId);
+    boolean existsByMember_IdAndPhoto_Id(Long memberId, Long photoId);
 }

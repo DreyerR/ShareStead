@@ -4,4 +4,5 @@ import za.co.technetic.ss.domain.persistence.MemberPhoto;
 
 public interface MemberPhotoTranslator {
     MemberPhoto saveMemberPhoto(MemberPhoto memberPhoto);
+    boolean existsByMemberIdAndPhotoId(Long memberId, Long photoId);
 }

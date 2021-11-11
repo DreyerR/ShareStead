@@ -20,4 +20,9 @@ public class MemberPhotoImpl implements MemberPhotoTranslator {
     public MemberPhoto saveMemberPhoto(MemberPhoto memberPhoto) {
         return memberPhotoRepository.save(memberPhoto);
     }
+
+    @Override
+    public boolean existsByMemberIdAndPhotoId(Long memberId, Long photoId) {
+        return memberPhotoRepository.existsByMember_IdAndPhoto_Id(memberId, photoId);
+    }
 }
