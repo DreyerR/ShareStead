@@ -10,7 +10,8 @@ import za.co.technetic.ss.logic.config.LogicConfig;
 @Configuration
 @ComponentScan(basePackages = {
         "za.co.technetic.ss.web.controller",
-        "za.co.technetic.ss.web.service"
+        "za.co.technetic.ss.web.util",
+        "za.co.technetic.ss.web.filter"
 })
 @PropertySource(value = "classpath:application.properties")
 public class WebConfig {
