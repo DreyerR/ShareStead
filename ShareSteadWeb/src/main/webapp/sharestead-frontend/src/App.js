@@ -1,6 +1,12 @@
-import { Col, Container, Row } from 'react-bootstrap';
 import './App.css';
+import { Col, Container, Row } from 'react-bootstrap';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+
 import NavigationBar from './components/NavigationBar';
+import Welcome from './components/Welcome';
+import Photo from './components/Photo';
+import Gallery from './components/Gallery';
+import Register from './components/Register';
 
 function App() {
 
@@ -9,24 +15,24 @@ function App() {
   }
 
   return (
-    <div>
+    <Router>
       <NavigationBar />
+
       <Container>
         <Row>
           <Col lg={12} style={marginTop}>
-            <div class="bg-light p-5 rounded-lg m-3">
-              <h1 class="display-7">Hi there!</h1>
-              <p class="lead">
-                To get started, please create an account or simply login.
-              </p>
-              <p>This platform enable the uploading, managing and sharing of images.</p>
-              <p>This is a project that was built for our CMPG323 module.</p>
-            </div>
+            <Routes>
+              <Route path="/" exact element={<Welcome />} />
+              <Route path="/welcome" exact element={<Welcome />} />
+              <Route path="/upload" exact element={<Photo />} />
+              <Route path="/gallery" exact element={<Gallery />} />
+              <Route path="/register" exact element={<Register />} />
+            </Routes>
           </Col>
         </Row>
       </Container>
 
-    </div>
+    </Router>
   );
 }
 
