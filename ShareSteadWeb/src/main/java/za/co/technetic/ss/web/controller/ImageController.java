@@ -24,6 +24,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("image")
+@CrossOrigin("*")
 public class ImageController {
 
     private final Logger LOGGER = LoggerFactory.getLogger(ImageController.class);

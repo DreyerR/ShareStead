@@ -25,7 +25,7 @@ const Navigationbar = () => {
                     </Nav>
                     <Nav className="ms-auto">
                         <Nav.Item>
-                            <Link to={""} className="nav-link">Login</Link>
+                            <Link to={"login"} className="nav-link">Login</Link>
                         </Nav.Item>
                         <Nav.Item>
                             <Link to={"register"} className="nav-link">Register</Link>

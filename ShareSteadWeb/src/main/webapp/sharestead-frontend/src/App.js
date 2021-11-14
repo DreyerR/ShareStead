@@ -7,6 +7,7 @@ import Welcome from './components/Welcome';
 import Photo from './components/Photo';
 import Gallery from './components/Gallery';
 import Register from './components/Register';
+import Login from './components/Login';
 
 function App() {
 
@@ -27,6 +28,7 @@ function App() {
               <Route path="/upload" exact element={<Photo />} />
               <Route path="/gallery" exact element={<Gallery />} />
               <Route path="/register" exact element={<Register />} />
+              <Route path="/login" exact element={<Login />} />
             </Routes>
           </Col>
         </Row>
