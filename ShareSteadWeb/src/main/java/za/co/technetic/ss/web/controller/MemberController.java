@@ -7,9 +7,11 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.bind.annotation.*;
 import za.co.technetic.ss.domain.dto.AuthRequestDto;
+import za.co.technetic.ss.domain.dto.LoginResponseDto;
 import za.co.technetic.ss.domain.dto.MemberDto;
 import za.co.technetic.ss.domain.persistence.Member;
 import za.co.technetic.ss.domain.service.GeneralResponse;
+import za.co.technetic.ss.logic.flow.FetchMemberFlow;
 import za.co.technetic.ss.logic.service.MemberService;
 import za.co.technetic.ss.web.util.JwtUtil;
 
@@ -19,12 +21,15 @@ import za.co.technetic.ss.web.util.JwtUtil;
 public class MemberController {
 
     private final MemberService memberService;
+    private final FetchMemberFlow fetchMemberFlow;
     private final JwtUtil jwtUtil;
     private final AuthenticationManager authenticationManager;
 
     @Autowired
-    public MemberController(MemberService memberService, JwtUtil jwtUtil, AuthenticationManager authenticationManager) {
+    public MemberController(MemberService memberService, FetchMemberFlow fetchMemberFlow, JwtUtil jwtUtil,
+                            AuthenticationManager authenticationManager) {
         this.memberService = memberService;
+        this.fetchMemberFlow = fetchMemberFlow;
         this.jwtUtil = jwtUtil;
         this.authenticationManager = authenticationManager;
     }
@@ -51,24 +56,31 @@ public class MemberController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<GeneralResponse<String>> authenticateMember(@RequestBody AuthRequestDto authRequestDto) {
+    public ResponseEntity<GeneralResponse<LoginResponseDto>> authenticateMember(@RequestBody AuthRequestDto authRequestDto) {
         String message = "Successfully logged in";
         HttpStatus httpStatus = HttpStatus.OK;
-        String token = null;
+        String token;
+        LoginResponseDto loginResponseDto = new LoginResponseDto();
 
         try {
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(authRequestDto.getEmail(), authRequestDto.getPassword())
             );
+
+            Member member = fetchMemberFlow.fetchMemberByEmail(authRequestDto.getEmail());
             token = jwtUtil.generateToken(authRequestDto.getEmail());
+
+            loginResponseDto.setId(member.getId());
+            loginResponseDto.setEmail(member.getEmail());
+            loginResponseDto.setToken(token);
         }
         catch(Exception e) {
             message = e.getMessage();
             httpStatus = HttpStatus.UNAUTHORIZED;
         }
 
-        GeneralResponse<String> generalResponse = new GeneralResponse<>(
-                httpStatus.value(), message, token
+        GeneralResponse<LoginResponseDto> generalResponse = new GeneralResponse<>(
+                httpStatus.value(), message, loginResponseDto
         );
 
         return new ResponseEntity<>(generalResponse, httpStatus);

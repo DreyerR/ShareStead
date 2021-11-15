@@ -28,7 +28,7 @@ public class PhotoDto {
         this.id = photo.getId();
         this.url = photo.getUrl();
         if (null != photo.getMetadata()) {
-            this.metadata = new MetadataDto(photo.getMetadata());
+            this.metadata = new MetadataDto(photo.getMetadata(), null);
         }
     }
 

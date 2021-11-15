@@ -20,4 +20,9 @@ public class MetadataTranslatorImpl implements MetadataTranslator {
     public Metadata saveMetadata(Metadata metadata) {
         return metadataRepository.save(metadata);
     }
+
+    @Override
+    public Metadata findByOriginalFileName(String originalFileName) {
+        return metadataRepository.findByOriginalFileName(originalFileName);
+    }
 }

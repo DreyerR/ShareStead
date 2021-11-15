@@ -19,4 +19,5 @@ public interface ImageTranslator {
     boolean deletePhoto(Long memberId, String keyName);
     boolean shareImage(Long ownerId, Member sharedWith, Photo photo, boolean isModifiable);
     Photo findPhotoByUrl(String fileName);
+    Photo findPhotoById(Long id);
 }

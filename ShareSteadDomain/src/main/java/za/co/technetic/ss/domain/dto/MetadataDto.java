@@ -13,6 +13,7 @@ public class MetadataDto {
     private LocalDate dateCreated;
     private double imgSize;
     private String contentType;
+    private PhotoDto photoDto;
 
     public MetadataDto(Long id, String originalFileName, LocalDate dateCreated, double imgSize, String contentType) {
         this.id = id;
@@ -22,15 +23,26 @@ public class MetadataDto {
         this.contentType = contentType;
     }
 
+    public MetadataDto(Long id, String originalFileName, LocalDate dateCreated, double imgSize, String contentType,
+                       PhotoDto photoDto) {
+        this.id = id;
+        this.originalFileName = originalFileName;
+        this.dateCreated = dateCreated;
+        this.imgSize = imgSize;
+        this.contentType = contentType;
+        this.photoDto = photoDto;
+    }
+
     public MetadataDto() {
     }
 
-    public MetadataDto(Metadata metadata) {
+    public MetadataDto(Metadata metadata, PhotoDto photoDto) {
         this.id = metadata.getId();
         this.originalFileName = metadata.getOriginalFileName();
         this.dateCreated = metadata.getDateCreated();
         this.imgSize = metadata.getImgSize();
         this.contentType = metadata.getContentType();
+        this.photoDto = photoDto;
     }
 
     public Long getId() {
@@ -73,6 +85,14 @@ public class MetadataDto {
         this.contentType = contentType;
     }
 
+    public PhotoDto getPhotoDto() {
+        return photoDto;
+    }
+
+    public void setPhotoDto(PhotoDto photoDto) {
+        this.photoDto = photoDto;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -80,11 +100,12 @@ public class MetadataDto {
         MetadataDto that = (MetadataDto) o;
         return Double.compare(that.imgSize, imgSize) == 0 && Objects.equals(id, that.id) &&
                 Objects.equals(originalFileName, that.originalFileName) &&
-                Objects.equals(dateCreated, that.dateCreated) && Objects.equals(contentType, that.contentType);
+                Objects.equals(dateCreated, that.dateCreated) && Objects.equals(contentType, that.contentType) &&
+                Objects.equals(photoDto, that.photoDto);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, originalFileName, dateCreated, imgSize, contentType);
+        return Objects.hash(id, originalFileName, dateCreated, imgSize, contentType, photoDto);
     }
 }

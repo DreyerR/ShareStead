@@ -121,4 +121,9 @@ public class ImageTranslatorImpl implements ImageTranslator {
     public Photo findPhotoByUrl(String fileName) {
         return photoRepository.findPhotoByUrl(fileName);
     }
+
+    @Override
+    public Photo findPhotoById(Long id) {
+        return photoRepository.findPhotoById(id);
+    }
 }
