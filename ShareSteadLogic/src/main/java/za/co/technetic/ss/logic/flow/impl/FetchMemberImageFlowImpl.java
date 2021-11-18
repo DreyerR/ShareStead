@@ -1,5 +1,7 @@
 package za.co.technetic.ss.logic.flow.impl;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
@@ -18,6 +20,8 @@ import java.util.List;
 @Transactional
 @Component
 public class FetchMemberImageFlowImpl implements FetchMemberImageFlow {
+
+    private final Logger LOGGER = LoggerFactory.getLogger(FetchMemberImageFlowImpl.class);
 
     private final ImageTranslator imageTranslator;
     private final MemberTranslator memberTranslator;
@@ -46,6 +50,8 @@ public class FetchMemberImageFlowImpl implements FetchMemberImageFlow {
             generalResponse.setPayload(imageTranslator.fetchMemberPhotos(member));
         }
         else {
+            LOGGER.warn("Invalid email `{}` attempted to fetch images", email);
+
             generalResponse.setCode(HttpStatus.NOT_FOUND.value());
             generalResponse.setMessage(String.format("Member with email '%s' not found", email));
         }

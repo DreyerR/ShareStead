@@ -84,8 +84,9 @@ public class ImageTranslatorImpl implements ImageTranslator {
 
     @Override
     public boolean deletePhoto(Long memberId, String keyName) {
-        if (photoRepository.existsPhotoByUrl(keyName)) {
-            photoRepository.deleteByUrl(keyName);
+        Photo photo = photoRepository.findPhotoByUrl(keyName);
+        if (null != photo) {
+            memberPhotoRepository.deleteAllByMember_IdAndPhoto_Id(memberId, photo.getId());
             LOGGER.info("Deleted photo with name '{}' from the database", keyName);
         }
         else {

@@ -25,4 +25,14 @@ public class MemberPhotoImpl implements MemberPhotoTranslator {
     public boolean existsByMemberIdAndPhotoId(Long memberId, Long photoId) {
         return memberPhotoRepository.existsByMember_IdAndPhoto_Id(memberId, photoId);
     }
+
+    @Override
+    public int deleteAllByPhotoId(Long photoId) {
+        return memberPhotoRepository.deleteAllByPhotoId(photoId);
+    }
+
+    @Override
+    public MemberPhoto findMemberPhotoByMemberIdAndPhotoId(Long memberId, Long photoId) {
+        return memberPhotoRepository.findMemberPhotoByMember_IdAndPhoto_Id(memberId, photoId);
+    }
 }

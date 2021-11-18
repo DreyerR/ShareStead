@@ -1,5 +1,7 @@
 package za.co.technetic.ss.logic.service.impl;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Lazy;
@@ -20,6 +22,8 @@ import java.util.ArrayList;
 @Component
 public class MemberServiceImpl implements MemberService {
 
+    private final Logger LOGGER = LoggerFactory.getLogger(MemberServiceImpl.class);
+
     private final MemberTranslator memberTranslator;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
@@ -31,6 +35,7 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public Member saveMember(MemberDto memberDto) {
+        LOGGER.info("{} is attempting to register", memberDto.getEmail());
         memberDto.setPassword(bCryptPasswordEncoder.encode(memberDto.getPassword()));
         return memberTranslator.saveMember(memberDto);
     }

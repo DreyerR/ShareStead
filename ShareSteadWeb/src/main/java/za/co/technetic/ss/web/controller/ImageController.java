@@ -95,7 +95,7 @@ public class ImageController {
     }
 
     @DeleteMapping("/delete/{email}/{fileName}")
-    public ResponseEntity<GeneralResponse<String>> deleteMemberPhoto(
+    public ResponseEntity<GeneralResponse<String>> deleteMemberPhotoPerMember(
             @PathVariable String email,
             @PathVariable String fileName
     ) {
@@ -104,6 +104,24 @@ public class ImageController {
 
         if (generalResponse.getCode() == 404)
             httpStatus = HttpStatus.NOT_FOUND;
+
+        return new ResponseEntity<>(generalResponse, httpStatus);
+    }
+
+    @DeleteMapping("/delete/all/{deletedBy}/{fileName}")
+    public ResponseEntity<GeneralResponse<String>> deleteMemberPhotoForAll(
+            @PathVariable String deletedBy,
+            @PathVariable String fileName
+    ) {
+        GeneralResponse<String> generalResponse = modifyMemberImageFlow.deleteMemberPhotoForAll(deletedBy, fileName);
+
+        HttpStatus httpStatus = HttpStatus.OK;
+        if (generalResponse.getCode() == 405)
+            httpStatus = HttpStatus.METHOD_NOT_ALLOWED;
+        else if (generalResponse.getCode() == 404)
+            httpStatus = HttpStatus.NOT_FOUND;
+        else if (generalResponse.getCode() == 500)
+            httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
 
         return new ResponseEntity<>(generalResponse, httpStatus);
     }
