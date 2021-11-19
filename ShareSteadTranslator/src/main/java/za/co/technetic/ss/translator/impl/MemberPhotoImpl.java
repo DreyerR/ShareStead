@@ -35,4 +35,9 @@ public class MemberPhotoImpl implements MemberPhotoTranslator {
     public MemberPhoto findMemberPhotoByMemberIdAndPhotoId(Long memberId, Long photoId) {
         return memberPhotoRepository.findMemberPhotoByMember_IdAndPhoto_Id(memberId, photoId);
     }
+
+    @Override
+    public void updateIsModifiable(boolean isModifiable, Long memberId, Long photoId) {
+        memberPhotoRepository.updateIsModifiable(isModifiable, memberId, photoId);
+    }
 }

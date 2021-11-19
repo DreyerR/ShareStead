@@ -151,6 +151,21 @@ public class ImageController {
         return new ResponseEntity<>(generalResponse, httpStatus);
     }
 
+    @PutMapping("/revoke/{emailToRevoke}/{fileName}")
+    public ResponseEntity<GeneralResponse<String>> revokeMemberAccessToPhoto(@PathVariable String emailToRevoke,
+                                                                             @PathVariable String fileName)
+    {
+        GeneralResponse<String> generalResponse = modifyMemberImageFlow.updateIsModifiable(emailToRevoke, fileName);
+        HttpStatus httpStatus = HttpStatus.OK;
+
+        if (generalResponse.getCode() == 404)
+            httpStatus = HttpStatus.NOT_FOUND;
+        else if (generalResponse.getCode() == 405)
+            httpStatus = HttpStatus.METHOD_NOT_ALLOWED;
+
+        return new ResponseEntity<>(generalResponse, httpStatus);
+    }
+
     private MediaType contentType(String fileName) {
         String[] fileArrSplit = fileName.split("\\.");
         String fileExtension  = fileArrSplit[fileArrSplit.length - 1];

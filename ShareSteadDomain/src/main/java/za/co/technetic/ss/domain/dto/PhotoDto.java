@@ -9,6 +9,7 @@ public class PhotoDto {
     private Long id;
     private String url;
     private MetadataDto metadata;
+    private boolean isSharedImage;
 
     public PhotoDto(Long id, String url, MetadataDto metadata) {
         this.id = id;
@@ -24,12 +25,13 @@ public class PhotoDto {
         this.url = url;
     }
 
-    public PhotoDto(Photo photo) {
+    public PhotoDto(Photo photo, boolean isSharedImage) {
         this.id = photo.getId();
         this.url = photo.getUrl();
         if (null != photo.getMetadata()) {
             this.metadata = new MetadataDto(photo.getMetadata(), null);
         }
+        this.isSharedImage = isSharedImage;
     }
 
     public Long getId() {
@@ -56,17 +58,25 @@ public class PhotoDto {
         this.metadata = metadata;
     }
 
+    public boolean isSharedImage() {
+        return isSharedImage;
+    }
+
+    public void setSharedImage(boolean sharedImage) {
+        isSharedImage = sharedImage;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         PhotoDto photoDto = (PhotoDto) o;
-        return Objects.equals(id, photoDto.id) && Objects.equals(url, photoDto.url) &&
-                Objects.equals(metadata, photoDto.metadata);
+        return isSharedImage == photoDto.isSharedImage && Objects.equals(id, photoDto.id) &&
+                Objects.equals(url, photoDto.url) && Objects.equals(metadata, photoDto.metadata);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, url, metadata);
+        return Objects.hash(id, url, metadata, isSharedImage);
     }
 }

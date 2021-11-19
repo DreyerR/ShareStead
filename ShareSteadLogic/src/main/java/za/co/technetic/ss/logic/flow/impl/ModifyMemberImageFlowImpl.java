@@ -84,4 +84,47 @@ public class ModifyMemberImageFlowImpl implements ModifyMemberImageFlow {
 
         return new GeneralResponse<>(httpStatus.value(), message);
     }
+
+    @Override
+    public GeneralResponse<String> updateIsModifiable(String email, String filename) {
+        String message = "Successfully revoked access";
+        HttpStatus httpStatus = HttpStatus.OK;
+
+        Member member = memberTranslator.findMemberByEmail(email);
+
+        if (null != member) {
+            Photo photo = imageTranslator.findPhotoByUrl(filename);
+
+            if (null != photo) {
+                MemberPhoto memberPhoto = memberPhotoTranslator.findMemberPhotoByMemberIdAndPhotoId(
+                        member.getId(),
+                        photo.getId()
+                );
+
+                if (null != memberPhoto) {
+                    if (memberPhoto.isModifiable()) {
+                        memberPhotoTranslator.updateIsModifiable(false, member.getId(), photo.getId());
+                    }
+                    else {
+                        message = "This user already does not have access to modify the photo";
+                        httpStatus = HttpStatus.METHOD_NOT_ALLOWED;
+                    }
+                }
+                else {
+                    message = "User does not have access to this photo";
+                    httpStatus = HttpStatus.METHOD_NOT_ALLOWED;
+                }
+            }
+            else {
+                message = "Photo could not be found";
+                httpStatus = HttpStatus.NOT_FOUND;
+            }
+        }
+        else {
+            message = "User could not be found";
+            httpStatus = HttpStatus.NOT_FOUND;
+        }
+
+        return new GeneralResponse<>(httpStatus.value(), message);
+    }
 }

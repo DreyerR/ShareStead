@@ -17,10 +17,7 @@ import za.co.technetic.ss.webservice.filestore.FileStore;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Component
 public class ImageTranslatorImpl implements ImageTranslator {
@@ -68,7 +65,10 @@ public class ImageTranslatorImpl implements ImageTranslator {
                 List<PhotoDto> photoDtoList = new ArrayList<>();
 
                 memberPhotoList.forEach(memberPhoto -> {
-                    photoDtoList.add(new PhotoDto(memberPhoto.getPhoto()));
+                    photoDtoList.add(new PhotoDto(
+                            memberPhoto.getPhoto(),
+                            !Objects.equals(memberPhoto.getMember().getId(), memberPhoto.getOwnerId())
+                    ));
                 });
 
                 return photoDtoList;

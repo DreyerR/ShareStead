@@ -7,4 +7,5 @@ public interface MemberPhotoTranslator {
     boolean existsByMemberIdAndPhotoId(Long memberId, Long photoId);
     int deleteAllByPhotoId(Long photoId);
     MemberPhoto findMemberPhotoByMemberIdAndPhotoId(Long memberId, Long photoId);
+    void updateIsModifiable(boolean isModifiable, Long memberId, Long photoId);
 }

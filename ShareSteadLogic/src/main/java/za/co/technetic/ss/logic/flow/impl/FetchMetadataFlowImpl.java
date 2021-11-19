@@ -33,7 +33,7 @@ public class FetchMetadataFlowImpl implements FetchMetadataFlow {
 
             return new MetadataDto(
                     metadata,
-                    new PhotoDto(photo)
+                    new PhotoDto(photo, false)
             );
         }
 
