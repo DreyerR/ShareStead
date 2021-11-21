@@ -4,10 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import za.co.technetic.ss.domain.persistence.Metadata;
 import za.co.technetic.ss.repo.persistence.MetadataRepository;
-import za.co.technetic.ss.translator.MetadataTranslator;
 
 @Component
-public class MetadataTranslatorImpl implements MetadataTranslator {
+public class MetadataTranslatorImpl implements za.co.technetic.ss.translator.MetadataTranslator {
 
     private final MetadataRepository metadataRepository;
 
@@ -24,5 +23,10 @@ public class MetadataTranslatorImpl implements MetadataTranslator {
     @Override
     public Metadata findByOriginalFileName(String originalFileName) {
         return metadataRepository.findByOriginalFileName(originalFileName);
+    }
+
+    @Override
+    public void updateOriginalFileName(String originalFileName, Long metaId) {
+        metadataRepository.updateOriginalFileName(originalFileName, metaId);
     }
 }

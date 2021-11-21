@@ -86,7 +86,7 @@ public class ModifyMemberImageFlowImpl implements ModifyMemberImageFlow {
     }
 
     @Override
-    public GeneralResponse<String> updateIsModifiable(String email, String filename) {
+    public GeneralResponse<String> revokeAccess(String email, String filename) {
         String message = "Successfully revoked access";
         HttpStatus httpStatus = HttpStatus.OK;
 
@@ -102,13 +102,7 @@ public class ModifyMemberImageFlowImpl implements ModifyMemberImageFlow {
                 );
 
                 if (null != memberPhoto) {
-                    if (memberPhoto.isModifiable()) {
-                        memberPhotoTranslator.updateIsModifiable(false, member.getId(), photo.getId());
-                    }
-                    else {
-                        message = "This user already does not have access to modify the photo";
-                        httpStatus = HttpStatus.METHOD_NOT_ALLOWED;
-                    }
+                    memberPhotoTranslator.revokeAccess(member.getId(), photo.getId());
                 }
                 else {
                     message = "User does not have access to this photo";

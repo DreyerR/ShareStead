@@ -5,5 +5,5 @@ import za.co.technetic.ss.domain.service.GeneralResponse;
 public interface ModifyMemberImageFlow {
     GeneralResponse<String> deletePhoto(String email, String keyName);
     GeneralResponse<String> deleteMemberPhotoForAll(String email, String fileName);
-    GeneralResponse<String> updateIsModifiable(String email, String filename);
+    GeneralResponse<String> revokeAccess(String email, String filename);
 }

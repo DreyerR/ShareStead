@@ -155,7 +155,7 @@ public class ImageController {
     public ResponseEntity<GeneralResponse<String>> revokeMemberAccessToPhoto(@PathVariable String emailToRevoke,
                                                                              @PathVariable String fileName)
     {
-        GeneralResponse<String> generalResponse = modifyMemberImageFlow.updateIsModifiable(emailToRevoke, fileName);
+        GeneralResponse<String> generalResponse = modifyMemberImageFlow.revokeAccess(emailToRevoke, fileName);
         HttpStatus httpStatus = HttpStatus.OK;
 
         if (generalResponse.getCode() == 404)

@@ -37,7 +37,7 @@ public class MemberPhotoImpl implements MemberPhotoTranslator {
     }
 
     @Override
-    public void updateIsModifiable(boolean isModifiable, Long memberId, Long photoId) {
-        memberPhotoRepository.updateIsModifiable(isModifiable, memberId, photoId);
+    public void revokeAccess(Long memberId, Long photoId) {
+        memberPhotoRepository.deleteAllByMember_IdAndPhoto_Id(memberId, photoId);
     }
 }
