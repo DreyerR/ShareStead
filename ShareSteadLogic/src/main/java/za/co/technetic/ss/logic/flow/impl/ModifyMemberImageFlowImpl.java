@@ -12,6 +12,7 @@ import za.co.technetic.ss.logic.flow.ModifyMemberImageFlow;
 import za.co.technetic.ss.translator.ImageTranslator;
 import za.co.technetic.ss.translator.MemberPhotoTranslator;
 import za.co.technetic.ss.translator.MemberTranslator;
+import za.co.technetic.ss.translator.MetadataTranslator;
 
 @Transactional
 @Component
@@ -20,13 +21,15 @@ public class ModifyMemberImageFlowImpl implements ModifyMemberImageFlow {
     private final ImageTranslator imageTranslator;
     private final MemberTranslator memberTranslator;
     private final MemberPhotoTranslator memberPhotoTranslator;
+    private final MetadataTranslator metadataTranslator;
 
     @Autowired
     public ModifyMemberImageFlowImpl(ImageTranslator imageTranslator, MemberTranslator memberTranslator,
-                                     MemberPhotoTranslator memberPhotoTranslator) {
+                                     MemberPhotoTranslator memberPhotoTranslator, MetadataTranslator metadataTranslator) {
         this.imageTranslator = imageTranslator;
         this.memberTranslator = memberTranslator;
         this.memberPhotoTranslator = memberPhotoTranslator;
+        this.metadataTranslator = metadataTranslator;
     }
 
     @Override
@@ -38,7 +41,7 @@ public class ModifyMemberImageFlowImpl implements ModifyMemberImageFlow {
         if (null != member) {
             if (!imageTranslator.deletePhoto(member.getId(), keyName)) {
                 httpStatus = HttpStatus.NOT_FOUND;
-                message = String.format("Could not delete photo '%s'. See the logs.", keyName);
+                message = "Photo not found";
             }
         }
         else {
@@ -62,7 +65,10 @@ public class ModifyMemberImageFlowImpl implements ModifyMemberImageFlow {
             if (null != photo) {
                 MemberPhoto memberPhoto = memberPhotoTranslator.findMemberPhotoByMemberIdAndPhotoId(member.getId(), photo.getId());
                 if (memberPhoto.isModifiable() || member.getId().equals(memberPhoto.getOwnerId())) {
-                    if (memberPhotoTranslator.deleteAllByPhotoId(photo.getId()) < 1) {
+                    if (memberPhotoTranslator.deleteAllByPhotoId(photo.getId()) >= 1) {
+                        imageTranslator.deletePhotoSingle(fileName);
+                    }
+                    else {
                         message = "Photo could not be deleted";
                         httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
                     }
@@ -103,6 +109,7 @@ public class ModifyMemberImageFlowImpl implements ModifyMemberImageFlow {
 
                 if (null != memberPhoto) {
                     memberPhotoTranslator.revokeAccess(member.getId(), photo.getId());
+
                 }
                 else {
                     message = "User does not have access to this photo";

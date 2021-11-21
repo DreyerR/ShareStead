@@ -17,6 +17,7 @@ public interface ImageTranslator {
     Photo savePhoto(Photo photo);
     List<PhotoDto> fetchMemberPhotos(Member member);
     boolean deletePhoto(Long memberId, String keyName);
+    boolean deletePhotoSingle(String keyName);
     boolean shareImage(Long ownerId, Member sharedWith, Photo photo, boolean isModifiable);
     Photo findPhotoByUrl(String fileName);
     Photo findPhotoById(Long id);

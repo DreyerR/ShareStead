@@ -98,6 +98,20 @@ public class ImageTranslatorImpl implements ImageTranslator {
     }
 
     @Override
+    public boolean deletePhotoSingle(String keyName) {
+        Photo photo = photoRepository.findPhotoByUrl(keyName);
+        if (null != photo) {
+            photoRepository.deleteById(photo.getId());
+            LOGGER.info("Deleted photo with name '{}' from the database", keyName);
+        }
+        else {
+            LOGGER.warn("Photo with URL '{}' could not be found in the database", keyName);
+            return false;
+        }
+        return false;
+    }
+
+    @Override
     public boolean shareImage(Long ownerId, Member sharedWith, Photo photo, boolean isModifiable) {
         try {
             MemberPhoto memberPhoto = new MemberPhoto(
